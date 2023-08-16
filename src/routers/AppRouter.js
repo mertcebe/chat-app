@@ -7,6 +7,7 @@ import ChatsPage from '../components/ChatsPage'
 import SignInPage from '../components/SignInPage'
 import useAuthorized from '../components/useAuthorized'
 import { toast, ToastContainer } from 'react-toastify'
+import AllUsersPage from '../components/AllUsersPage';
 
 
 const AppRouter = () => {
@@ -22,6 +23,7 @@ const AppRouter = () => {
                             <Routes>
                                 <Route element={<PrivateRoute isAuthorized={isAuthorized} />}>
                                     <Route path='/chats' element={<ChatsPage />} />
+                                    <Route path='/chats/all-users' element={<AllUsersPage />} />
                                 </Route>
                                 <Route element={<PublicRoute isAuthorized={isAuthorized} />}>
                                     <Route path='/' element={<SignInPage />} />

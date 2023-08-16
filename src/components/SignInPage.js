@@ -17,7 +17,8 @@ const SignInPage = () => {
       .then((userCredentials) => {
         setDoc(doc(database, `chatUsers/${userCredentials.user.uid}`), {
           name: name,
-          email: userCredentials.user.email
+          email: userCredentials.user.email,
+          uid: userCredentials.user.uid
         })
           .then((snapshot) => {
             console.log("yüklendi", snapshot)
