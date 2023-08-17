@@ -12,6 +12,7 @@ import MyTextUser from './MyTextUser'
 
 const Navbar = () => {
     let [users, setUsers] = useState();
+    let [myTextsUsers, setMyTextsUsers] = useState();
     let [text, setText] = useState();
     let [findUser, setFindUser] = useState();
 
@@ -23,26 +24,36 @@ const Navbar = () => {
         getDocs(query(collection(database, `chatUsers/${auth.currentUser.uid}/friends`)))
             .then((snapshot) => {
                 let users = [];
+                let myTextsUsers = [];
                 snapshot.forEach((user) => {
                     users.push(user.data());
+                    // the last people i texted
+                    getDocs(query(collection(database, `chatUsers/${auth.currentUser.uid}/myTexts/${user.data().uid}/messages`)))
+                        .then((snapshot) => {
+                            if (snapshot.size !== 0) {
+                                myTextsUsers.push(user.data());
+                            }
+                            setMyTextsUsers(myTextsUsers);
+                        })
                 })
                 setUsers(users);
             })
     }, []);
 
+    // find user part
     const getUser = (uid) => {
         getDoc(doc(database, `chatUsers/${uid}`))
-        .then((snapshot) => {
-            if(snapshot.exists()){
-                setFindUser(snapshot.data());
-            }
-            else{
-                toast.error("User not found!");
-            }
-        })
+            .then((snapshot) => {
+                if (snapshot.exists()) {
+                    setFindUser(snapshot.data());
+                }
+                else {
+                    toast.error("User not found!");
+                }
+            })
     }
 
-    if (!users) {
+    if (!users || myTextsUsers) {
         return (
             <h5>loading...</h5>
         )
@@ -52,8 +63,8 @@ const Navbar = () => {
             <div >
                 <form onSubmit={(e) => {
                     e.preventDefault();
-                    for(let user of users){
-                        if(user.name === text){
+                    for (let user of users) {
+                        if (user.name === text) {
                             getUser(user.uid)
                         }
                     }
@@ -79,15 +90,23 @@ const Navbar = () => {
                         )}
                     /></form>
 
-                <ul style={{listStyle: "none", margin: 0, padding: 0}}>
+                <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
                     {/* find a friend */}
                     {
-                        findUser?
-                        <MyTextUser findUser={findUser}/>
-                        :
-                        <></>
+                        findUser ?
+                            <MyTextUser findUser={findUser} />
+                            :
+                            <></>
                     }
                     {/* the people who text */}
+                    {
+                        myTextsUsers.length !== 0 ?
+                            myTextsUsers.map((user) => {
+                                return <MyTextUser findUser={user} />
+                            })
+                            :
+                            <i>No messages</i>
+                    }
                 </ul>
             </div>
             <div className="d-flex justify-content-between align-items-center">

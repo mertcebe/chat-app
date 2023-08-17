@@ -9,6 +9,7 @@ import { Provider } from 'react-redux'
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 let initialState = {
+  activeUser: null,
   allUsers: false
 };
 
@@ -16,7 +17,13 @@ let reducer = (state = initialState, action) => {
   switch (action.type) {
     case "SET":
       return {
+        ...state,
         allUsers: action.payload
+      }
+    case "SET_USER":
+      return {
+        ...state,
+        activeUser: action.payload
       }
       default:
         return state

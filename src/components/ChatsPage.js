@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { auth } from '../firebase/firebaseConfig'
 import profileImg from '../images/profileImg3.jpg'
 import { NavLink } from 'react-router-dom'
@@ -9,12 +9,13 @@ import { useSelector } from 'react-redux'
 
 
 const ChatsPage = ({ allUsers }) => {
-    let isAllUsers = useSelector((state) => {
-        return state.allUsers;
+    let [activeUser, isAllUsers] = useSelector((state) => {
+        console.log(state)
+        return [state.activeUser, state.allUsers];
     })
     useEffect(() => {
         if (allUsers) {
-
+            
         }
     }, []);
     return (
@@ -25,7 +26,7 @@ const ChatsPage = ({ allUsers }) => {
                     <small style={{ color: "#fff" }}>{auth.currentUser.displayName}</small>
                 </NavLink>
                 <div style={{ width: "80%", backgroundColor: "#42698d", color: "#fff" }}>
-                    <small>message part</small>
+                    <h5>ChatApp</h5>
                 </div>
             </div>
             <div className="d-flex" style={{position: "relative"}}>
@@ -34,7 +35,7 @@ const ChatsPage = ({ allUsers }) => {
                     isAllUsers ?
                         <AllUsersPage />
                     :
-                        <Chat />
+                        <Chat user={activeUser?activeUser:null}/>
                 }
             </div>
         </div>

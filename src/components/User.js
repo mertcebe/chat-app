@@ -11,7 +11,6 @@ const User = ({ user }) => {
         const controlUser = async () => {
             getDoc(doc(database, `chatUsers/${auth.currentUser.uid}/friends/${user.name}`))
                 .then((snapshot) => {
-                    console.log(snapshot.data());
                     if (snapshot.exists()) {
                         setMyUser(snapshot.data());
                     }
