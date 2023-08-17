@@ -21,23 +21,27 @@ const Navbar = () => {
         return state.allUsers;
     })
     useEffect(() => {
-        getDocs(query(collection(database, `chatUsers/${auth.currentUser.uid}/friends`)))
-            .then((snapshot) => {
-                let users = [];
-                let myTextsUsers = [];
-                snapshot.forEach((user) => {
-                    users.push(user.data());
-                    // the last people i texted
-                    getDocs(query(collection(database, `chatUsers/${auth.currentUser.uid}/myTexts/${user.data().uid}/messages`)))
-                        .then((snapshot) => {
-                            if (snapshot.size !== 0) {
-                                myTextsUsers.push(user.data());
-                            }
+        const getUsers = async () => {
+            getDocs(query(collection(database, `chatUsers/${auth.currentUser.uid}/friends`)))
+                .then((snapshot) => {
+                    let users = [];
+                    let myTextsUsers = [];
+                    snapshot.forEach(async (user) => {
+                        users.push(user.data());
+                        // the last people i texted
+                        await getDocs(query(collection(database, `chatUsers/${auth.currentUser.uid}/myTexts/${user.data().uid}/messages`)))
+                            .then((snapshot) => {
+                                if (snapshot.size !== 0) {
+                                    myTextsUsers.push(user.data());
+                                    console.log(user.data())
+                                }
+                            })
                             setMyTextsUsers(myTextsUsers);
-                        })
+                    })
+                    setUsers(users);
                 })
-                setUsers(users);
-            })
+        }
+        getUsers();
     }, []);
 
     // find user part
@@ -53,7 +57,7 @@ const Navbar = () => {
             })
     }
 
-    if (!users || myTextsUsers) {
+    if (!users || !myTextsUsers) {
         return (
             <h5>loading...</h5>
         )
@@ -100,7 +104,7 @@ const Navbar = () => {
                     }
                     {/* the people who text */}
                     {
-                        myTextsUsers.length !== 0 ?
+                        myTextsUsers ?
                             myTextsUsers.map((user) => {
                                 return <MyTextUser findUser={user} />
                             })
