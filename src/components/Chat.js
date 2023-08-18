@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import Message from './Message';
 import { addDoc, collection, doc, getDocs, orderBy, query, setDoc } from 'firebase/firestore';
 import database, { auth } from '../firebase/firebaseConfig';
+import { useDispatch } from 'react-redux';
+import Back from './Back';
 
 const Chat = ({ user }) => {
   let [text, setText] = useState();
@@ -19,7 +21,12 @@ const Chat = ({ user }) => {
     }
   }, [user, messages]);
 
+  let dispatch = useDispatch();
   const sendMesssage = (e) => {
+    dispatch({
+      type: "SET_LASTMSG",
+      payload: text
+    })
     e.preventDefault();
     console.log(text)
     let date = new Date().getTime();
@@ -35,8 +42,8 @@ const Chat = ({ user }) => {
           dateAdded: date
         })
       })
-    
-      setText('')
+
+    setText('')
   }
   if (user) {
     if (!messages) {
@@ -49,7 +56,8 @@ const Chat = ({ user }) => {
     <>
       {
         user ?
-          <div style={{ width: "80%" }}>
+          <div style={{ width: "80%", position: "relative" }}>
+            <Back top={10} left={100} />
             <div style={{ width: "100%", background: "#0c3751", color: "#fff", boxSizing: "border-box", padding: "14px 10px" }}>
               <small>{user.name}</small>
             </div>
@@ -75,7 +83,9 @@ const Chat = ({ user }) => {
             </div>
           </div>
           :
-          <h5>chat</h5>
+          <div className='d-flex justify-content-center align-items-center' style={{ width: "80%", height: "100vh - 42px", background: "#ecf8f9" }}>
+            <i className='text-muted' style={{pointerEvents: "none"}}>~choose contact to start messaging~</i>
+          </div>
       }
     </>
   )

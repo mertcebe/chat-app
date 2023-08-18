@@ -3,12 +3,12 @@ import backImg from '../images/chatAppImg.jpg'
 import { useDispatch } from 'react-redux'
 import { collection, doc, getDoc, getDocs, limit, orderBy, query } from 'firebase/firestore';
 import database, { auth } from '../firebase/firebaseConfig';
+import Moment from 'react-moment';
 
 const MyTextUser = ({ findUser }) => {
-  let [lastMsg, setLastMsg] = useState();
+  let [lastMsg, setLastMsg] = useState("");
   let dispatch = useDispatch();
   const openChat = () => {
-    console.log(findUser);
     dispatch({
       type: "SET",
       payload: false
@@ -20,20 +20,35 @@ const MyTextUser = ({ findUser }) => {
   }
 
   useEffect(() => {
-    getDocs(query(collection(database, `chatUsers/${auth.currentUser.uid}/myTexts/${findUser.uid}/messages`)), orderBy("dateAdded", 'asc'), limit(1))
+    getDocs(query(collection(database, `chatUsers/${auth.currentUser.uid}/myTexts/${findUser.uid}/messages`)))
       .then((snapshot) => {
         let lastMsg = "";
+        let type = "";
+        let dates = [];
+        let messages = [];
         snapshot.forEach((msg) => {
+          messages.push(msg.data());
+          dates.push(msg.data().dateAdded);
           lastMsg = msg.data().msg;
+          type = msg.data().type;
         })
-        setLastMsg(lastMsg);
+        dates = dates.sort().reverse();
+        for(let msg of messages){
+          if(msg.dateAdded === dates[0]){
+            console.log(msg)
+            setLastMsg(msg);
+          }
+        }
       })
-  }, [lastMsg]);
+  }, []);
 
-  if(!lastMsg){
-    return (
-      <></>
-    )
+  if (!findUser) {
+    if (lastMsg !== "") {
+      console.log("adawdadww")
+      return (
+        <></>
+      )
+    }
   }
   return (
     <button onClick={openChat} className='w-100' style={{ border: "none", padding: "10px 5px", display: "flex", alignItems: "flex-start", backgroundColor: "#0c3751" }}>
@@ -42,7 +57,7 @@ const MyTextUser = ({ findUser }) => {
       </div>
       <div style={{ textAlign: "left" }}>
         <small className='d-block' style={{ color: "#fff" }}>{findUser.name}</small>
-        <small className='m-0 p-0'>{lastMsg}</small>
+        <small className='m-0 p-0'>{lastMsg.msg}{lastMsg.type === 'myself'?<i class="fa-solid fa-check"></i>:<></>}~{<Moment fromNow style={{fontSize: "12px"}}>{lastMsg.dateAdded}</Moment>}</small>
       </div>
     </button>
   )
