@@ -22,7 +22,7 @@ const AllUsersPage = () => {
         )
     }
     return (
-        <div className='d-flex align-items-start' style={{flexWrap: "wrap"}}>
+        <div className='d-flex justify-content-center align-items-start' style={{flexWrap: "wrap", width: "80%", height: `${(users.length / 4)*100}px`}}>
             {
                 users.map((user, index) => {
                     return <User key={index} user={user}/>

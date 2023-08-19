@@ -6,11 +6,11 @@ import Navbar from './Navbar'
 import Chat from './Chat'
 import AllUsersPage from './AllUsersPage'
 import { useSelector } from 'react-redux'
+import FriendsRequests from './FriendsRequests'
 
 
 const ChatsPage = ({ allUsers }) => {
     let [activeUser, isAllUsers] = useSelector((state) => {
-        console.log(state)
         return [state.activeUser, state.allUsers];
     })
     useEffect(() => {
@@ -25,8 +25,9 @@ const ChatsPage = ({ allUsers }) => {
                     <img src={auth.currentUser.photoURL ? auth.currentUser.photoURL : profileImg} alt="" style={{ width: "40px", height: "40px", borderRadius: "50%", pointerEvents: "none", boxSizing: "border-box", padding: "7px" }} />
                     <small style={{ color: "#fff" }}>{auth.currentUser.displayName}</small>
                 </NavLink>
-                <div style={{ width: "80%", backgroundColor: "#42698d", color: "#fff" }}>
+                <div style={{ width: "80%", backgroundColor: "#42698d", color: "#fff", display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0 10px" }}>
                     <h5>ChatApp</h5>
+                    <FriendsRequests />
                 </div>
             </div>
             <div className="d-flex" style={{position: "relative"}}>

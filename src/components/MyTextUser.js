@@ -35,7 +35,6 @@ const MyTextUser = ({ findUser }) => {
         dates = dates.sort().reverse();
         for(let msg of messages){
           if(msg.dateAdded === dates[0]){
-            console.log(msg)
             setLastMsg(msg);
           }
         }
@@ -53,7 +52,7 @@ const MyTextUser = ({ findUser }) => {
   return (
     <button onClick={openChat} className='w-100' style={{ border: "none", padding: "10px 5px", display: "flex", alignItems: "flex-start", backgroundColor: "#0c3751" }}>
       <div style={{ width: "40px", height: "40px", borderRadius: "50%", overflow: "hidden", marginRight: "10px" }}>
-        <img src={findUser.photoUrl ? findUser.photoUrl : backImg} alt="" style={{ width: "100%", height: "100%" }} />
+        <img src={findUser.photoURL ? findUser.photoURL : backImg} alt="" style={{ width: "100%", height: "100%" }} />
       </div>
       <div style={{ textAlign: "left" }}>
         <small className='d-block' style={{ color: "#fff" }}>{findUser.name}</small>

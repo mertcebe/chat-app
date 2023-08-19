@@ -4,6 +4,7 @@ import { addDoc, collection, doc, getDocs, orderBy, query, setDoc } from 'fireba
 import database, { auth } from '../firebase/firebaseConfig';
 import { useDispatch } from 'react-redux';
 import Back from './Back';
+import { toast } from 'react-toastify';
 
 const Chat = ({ user }) => {
   let [text, setText] = useState();
@@ -23,24 +24,29 @@ const Chat = ({ user }) => {
 
   let dispatch = useDispatch();
   const sendMesssage = (e) => {
-    dispatch({
-      type: "SET_LASTMSG",
-      payload: text
-    })
     e.preventDefault();
-    let date = new Date().getTime();
-    addDoc(collection(database, `chatUsers/${auth.currentUser.uid}/myTexts/${user.uid}/messages`), {
-      msg: text,
-      type: 'myself',
-      dateAdded: date
-    })
-      .then((snapshot) => {
-        setDoc(doc(database, `chatUsers/${user.uid}/myTexts/${auth.currentUser.uid}/messages/${snapshot.id}`), {
-          msg: text,
-          type: 'yourself',
-          dateAdded: date
-        })
+    if (text) {
+      dispatch({
+        type: "SET_LASTMSG",
+        payload: text
       })
+      let date = new Date().getTime();
+      addDoc(collection(database, `chatUsers/${auth.currentUser.uid}/myTexts/${user.uid}/messages`), {
+        msg: text,
+        type: 'myself',
+        dateAdded: date
+      })
+        .then((snapshot) => {
+          setDoc(doc(database, `chatUsers/${user.uid}/myTexts/${auth.currentUser.uid}/messages/${snapshot.id}`), {
+            msg: text,
+            type: 'yourself',
+            dateAdded: date
+          })
+        })
+    }
+    else{
+      toast.dark('Please enter least one word!');
+    }
 
     setText('')
   }
@@ -63,9 +69,9 @@ const Chat = ({ user }) => {
             <div className='chatPart' style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", height: "calc(100vh - 92px)" }}>
               <div className='chat' style={{ height: "calc(100vh - 92px - 60px)", background: "#4e7497", overflow: "auto" }}>
                 {
-                  messages.map((msg) => {
+                  messages&&messages.map((msg) => {
                     return (
-                      <Message msg={msg.msg} type={msg.type} dateAdded={msg.dateAdded} />
+                      <Message msg={msg.msg} type={msg.type} dateAdded={msg.dateAdded} user={user}/>
                     )
                   })
                 }

@@ -1,2 +1,13 @@
 @import '../../node_modules/bootstrap/scss/bootstrap.scss';
 
+#userCard{
+    cursor: pointer;
+}
+
+#userCard > img{
+    transition: all 0.3s ease;
+}
+
+#userCard:hover > img{
+    border-bottom-left-radius: 0 !important;
+}
