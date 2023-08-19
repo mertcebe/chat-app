@@ -21,7 +21,6 @@ const Navbar = () => {
         return state.allUsers;
     })
     useEffect(() => {
-        //* burada en son yazdığımız useri en üste almayı yap
         const getUsers = async () => {
             getDocs(query(collection(database, `chatUsers/${auth.currentUser.uid}/friends`)))
                 .then((snapshot) => {
@@ -36,7 +35,7 @@ const Navbar = () => {
                                     myTextsUsers.push(user.data());
                                 }
                             })
-                        setMyTextsUsers(myTextsUsers);
+                        setMyTextsUsers(myTextsUsers)
                     })
                     setUsers(users);
                 })
@@ -50,12 +49,12 @@ const Navbar = () => {
             .then((snapshot) => {
                 if (snapshot.exists()) {
                     let count = 0;
-                    for(let user of myTextsUsers){
-                        if(user.uid === snapshot.data().uid){
-                            count+=1;
+                    for (let user of myTextsUsers) {
+                        if (user.uid === snapshot.data().uid) {
+                            count += 1;
                         }
                     }
-                    if(count == 0){
+                    if (count == 0) {
                         setFindUser(snapshot.data());
                     }
                 }

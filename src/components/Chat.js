@@ -28,7 +28,6 @@ const Chat = ({ user }) => {
       payload: text
     })
     e.preventDefault();
-    console.log(text)
     let date = new Date().getTime();
     addDoc(collection(database, `chatUsers/${auth.currentUser.uid}/myTexts/${user.uid}/messages`), {
       msg: text,
@@ -84,7 +83,7 @@ const Chat = ({ user }) => {
           </div>
           :
           <div className='d-flex justify-content-center align-items-center' style={{ width: "80%", height: "100vh - 42px", background: "#ecf8f9" }}>
-            <i className='text-muted' style={{pointerEvents: "none"}}>~choose contact to start messaging~</i>
+            <i className='text-muted' style={{ pointerEvents: "none" }}>~choose contact to start messaging~</i>
           </div>
       }
     </>
