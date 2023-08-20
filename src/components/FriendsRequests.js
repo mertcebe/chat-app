@@ -7,12 +7,6 @@ import database, { auth } from '../firebase/firebaseConfig';
 import { collection, deleteDoc, doc, getDocs, query, setDoc } from 'firebase/firestore';
 import { toast } from 'react-toastify';
 
-// const FriendsRequests = () => {
-//   return (
-//     <div>FriendsRequests</div>
-//   )
-// }
-
 export default function FriendsRequests() {
     let [users, setUsers] = useState();
     useEffect(() => {
@@ -70,7 +64,7 @@ export default function FriendsRequests() {
                 aria-expanded={open ? 'true' : undefined}
                 onClick={users.length > 0 ? handleClick : func}
             >
-                <i class="fa-solid fa-user-plus"></i>
+                <i className="fa-solid fa-user-plus"></i>
             </Button>
             <Menu
                 id="fade-menu"

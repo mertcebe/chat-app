@@ -1,7 +1,7 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
 
-const Back = ({top, left}) => {
+const Back = ({ top, left }) => {
   let dispatch = useDispatch();
   const func = () => {
     dispatch({
@@ -14,9 +14,7 @@ const Back = ({top, left}) => {
     })
   }
   return (
-    <div style={{position: "absolute", top: `${top}px`, left: `${left}px`}}>
-        <button className='btn btn-sm btn-outline-light' onClick={func}><i class="fa-solid fa-chevron-left"></i></button>
-    </div>
+    <button className='' style={{display: "inline-block", marginRight: "10px", border: "none", width: "20px", height: "20px", fontSize: "10px", borderRadius: "50%", backgroundColor: "#fff"}} onClick={func}><i class="fa-solid fa-chevron-left"></i></button>
   )
 }
 

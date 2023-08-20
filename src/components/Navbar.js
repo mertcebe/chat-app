@@ -29,7 +29,7 @@ const Navbar = () => {
                     snapshot.forEach(async (user) => {
                         users.push(user.data());
                         // the last people i texted
-                        await getDocs(query(collection(database, `chatUsers/${auth.currentUser.uid}/myTexts/${user.data().uid}/messages`)))
+                        await getDocs(query(collection(database, `chatUsers/${auth.currentUser.uid}/myTexts/${user.data().uid}/messages`), orderBy('dateAdded', 'desc')))
                             .then((snapshot) => {
                                 if (snapshot.size !== 0) {
                                     myTextsUsers.push(user.data());
@@ -74,6 +74,14 @@ const Navbar = () => {
                     for (let user of users) {
                         if (user.name === text) {
                             getUser(user.uid)
+                            dispatch({
+                                type: "SET",
+                                payload: false
+                            })
+                            dispatch({
+                                type: "SET_USER",
+                                payload: user
+                            })
                         }
                     }
                 }}><Autocomplete
@@ -110,7 +118,7 @@ const Navbar = () => {
                     {
                         myTextsUsers ?
                             myTextsUsers.map((user) => {
-                                return <MyTextUser findUser={user} />
+                                return <MyTextUser key={user.uid} findUser={user} />
                             })
                             :
                             <i>No messages</i>

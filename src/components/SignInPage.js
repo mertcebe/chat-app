@@ -8,6 +8,29 @@ import 'react-toastify/dist/ReactToastify.css';
 import { doc, setDoc } from 'firebase/firestore'
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
+
+export const submitImgToStorage = (files, uid, name) => {
+  return new Promise((resolve, reject) => {
+    files.map(async (file) => {
+      const storage = getStorage();
+      const metadata = {
+        contentType: file.type
+      };
+      const storageRef = ref(storage, `${uid}/` + file.name);
+      let uploadTask = await uploadBytesResumable(storageRef, file.self, metadata)
+        .then(async (snapshot) => {
+          await getDownloadURL(snapshot.ref).then((downloadURL) => {
+            console.log('File available at', downloadURL);
+            resolve({
+              name: name,
+              src: downloadURL
+            });
+          });
+        })
+    })
+  })
+}
+
 const SignInPage = () => {
   let [name, setName] = useState();
   let [email, setEmail] = useState();
@@ -17,7 +40,7 @@ const SignInPage = () => {
     e.preventDefault();
     signInWithEmailAndPassword(auth, email, password)
       .then(async (userCredentials) => {
-        await submitImgToStorage(files, userCredentials.user.uid)
+        await submitImgToStorage(files, userCredentials.user.uid, name)
           .then(async (uploadedImg) => {
             updateProfile(userCredentials.user, {
               displayName: name,
@@ -34,50 +57,9 @@ const SignInPage = () => {
           .then(() => {
             toast.success(`${userCredentials.user.displayName} have just sign in!`);
           })
-
-        // setDoc(doc(database, `chatUsers/${userCredentials.user.uid}`), {
-        //   name: name,
-        //   email: userCredentials.user.email,
-        //   uid: userCredentials.user.uid
-        // })
-        //   .then(async () => {
-        //     await submitImgToStorage(files, userCredentials.user.uid)
-        //       .then((uploadedImg) => {
-        //         console.log(uploadedImg, 'qdqwdqdqwdqdqqwdqwdqd');
-        //         updateProfile(userCredentials.user, {
-        //           displayName: name,
-        //           photoURL: uploadedImg.src
-        //         })
-        //       })
-        //       .then(() => {
-        //         toast.success(`${userCredentials.user.displayName} have just sign in!`);
-        //       })
-        //   })
       })
   }
 
-
-  const submitImgToStorage = (files, uid) => {
-    return new Promise((resolve, reject) => {
-      files.map(async (file) => {
-        const storage = getStorage();
-        const metadata = {
-          contentType: file.type
-        };
-        const storageRef = ref(storage, `${uid}/` + file.name);
-        let uploadTask = await uploadBytesResumable(storageRef, file.self, metadata)
-          .then(async (snapshot) => {
-            await getDownloadURL(snapshot.ref).then((downloadURL) => {
-              console.log('File available at', downloadURL);
-              resolve({
-                name: name,
-                src: downloadURL
-              });
-            });
-          })
-      })
-    })
-  }
 
   return (
     <div className='d-flex justify-content-center align-items-center' style={{ height: "100vh", background: `url(${backGif} center no-repeat)` }}>

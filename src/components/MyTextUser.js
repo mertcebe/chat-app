@@ -20,30 +20,32 @@ const MyTextUser = ({ findUser }) => {
   }
 
   useEffect(() => {
-    getDocs(query(collection(database, `chatUsers/${auth.currentUser.uid}/myTexts/${findUser.uid}/messages`)))
-      .then((snapshot) => {
-        let lastMsg = "";
-        let type = "";
-        let dates = [];
-        let messages = [];
-        snapshot.forEach((msg) => {
-          messages.push(msg.data());
-          dates.push(msg.data().dateAdded);
-          lastMsg = msg.data().msg;
-          type = msg.data().type;
-        })
-        dates = dates.sort().reverse();
-        for(let msg of messages){
-          if(msg.dateAdded === dates[0]){
-            setLastMsg(msg);
+    const getLastMsg = async () => {
+      await getDocs(query(collection(database, `chatUsers/${auth.currentUser.uid}/myTexts/${findUser.uid}/messages`)))
+        .then((snapshot) => {
+          let lastMsg = "";
+          let type = "";
+          let dates = [];
+          let messages = [];
+          snapshot.forEach((msg) => {
+            messages.push(msg.data());
+            dates.push(msg.data().dateAdded);
+            lastMsg = msg.data().msg;
+            type = msg.data().type;
+          })
+          dates = dates.sort().reverse();
+          for (let msg of messages) {
+            if (msg.dateAdded === dates[0]) {
+              setLastMsg(msg);
+            }
           }
-        }
-      })
+        })
+    }
+    getLastMsg();
   }, []);
 
   if (!findUser) {
     if (lastMsg !== "") {
-      console.log("adawdadww")
       return (
         <></>
       )
@@ -56,7 +58,7 @@ const MyTextUser = ({ findUser }) => {
       </div>
       <div style={{ textAlign: "left" }}>
         <small className='d-block' style={{ color: "#fff" }}>{findUser.name}</small>
-        <small className='m-0 p-0'>{lastMsg.msg}{lastMsg.type === 'myself'?<i class="fa-solid fa-check"></i>:<></>}~{<Moment fromNow style={{fontSize: "12px"}}>{lastMsg.dateAdded}</Moment>}</small>
+        <small className='m-0 p-0'>{lastMsg.msg}{lastMsg.type === 'myself' ? <i className="fa-solid fa-check"></i> : <></>}~{<Moment fromNow style={{ fontSize: "12px" }}>{lastMsg.dateAdded}</Moment>}</small>
       </div>
     </button>
   )
