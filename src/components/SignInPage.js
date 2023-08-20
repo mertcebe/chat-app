@@ -99,7 +99,7 @@ const SignInPage = () => {
         </form>
       </div>
       <div className='bg-primary' style={{ width: "40%" }}>
-        {/* <img src={backGif} alt="" style={{width: "100%"}}/> */}
+        <img src={backGif} alt="" style={{width: "100%"}}/>
       </div>
     </div>
   )

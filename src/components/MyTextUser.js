@@ -5,7 +5,7 @@ import { collection, doc, getDoc, getDocs, limit, orderBy, query } from 'firebas
 import database, { auth } from '../firebase/firebaseConfig';
 import Moment from 'react-moment';
 
-const MyTextUser = ({ findUser }) => {
+const MyTextUser = ({ findUser, isSearch }) => {
   let [lastMsg, setLastMsg] = useState("");
   let dispatch = useDispatch();
   const openChat = () => {
@@ -44,8 +44,8 @@ const MyTextUser = ({ findUser }) => {
     getLastMsg();
   }, []);
 
-  if (!findUser) {
-    if (lastMsg !== "") {
+  if (!isSearch) {
+    if (!findUser || !lastMsg) {
       return (
         <></>
       )
@@ -58,7 +58,13 @@ const MyTextUser = ({ findUser }) => {
       </div>
       <div style={{ textAlign: "left" }}>
         <small className='d-block' style={{ color: "#fff" }}>{findUser.name}</small>
-        <small className='m-0 p-0'>{lastMsg.msg}{lastMsg.type === 'myself' ? <i className="fa-solid fa-check"></i> : <></>}~{<Moment fromNow style={{ fontSize: "12px" }}>{lastMsg.dateAdded}</Moment>}</small>
+        {
+          isSearch ?
+            <></>
+            :
+            <small className='m-0 p-0'>{lastMsg.msg.length > 14?`${lastMsg.msg.slice(0,14)}...`:lastMsg.msg}{lastMsg.type === 'myself' ? <i className="fa-solid fa-check"></i> : <></>}~{<Moment fromNow style={{ fontSize: "12px" }}>{lastMsg.dateAdded}</Moment>}</small>
+
+        }
       </div>
     </button>
   )

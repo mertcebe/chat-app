@@ -1,18 +1,22 @@
 @import '../../node_modules/bootstrap/scss/bootstrap.scss';
 
-#userCard{
+#userCard {
     cursor: pointer;
     transition: all 0.3s ease;
 }
 
-#userCard:hover{
+#userCard:hover {
     box-shadow: none !important;
 }
 
-#userCard > img{
+#userCard>img {
     transition: all 0.3s ease;
 }
 
-#userCard:hover > img{
+#userCard:hover>img {
     border-bottom-left-radius: 0 !important;
+}
+
+::-webkit-scrollbar {
+    display: none;
 }

@@ -28,54 +28,49 @@ const Chat = ({ user }) => {
   let dispatch = useDispatch();
   const sendMesssage = async (e) => {
     e.preventDefault();
-    if (text) {
-      dispatch({
-        type: "SET_LASTMSG",
-        payload: text
-      })
-      let date = new Date().getTime();
-      console.log(file)
-      if (file || file !== undefined) {
-        await submitImgToStorage(file, auth.currentUser.uid)
-          .then((snapshot) => {
-            let storageImg = snapshot;
-            addDoc(collection(database, `chatUsers/${auth.currentUser.uid}/myTexts/${user.uid}/messages`), {
-              msg: text,
-              type: 'myself',
-              dateAdded: date,
-              img: file !== null ? storageImg : null
-            })
-              .then((snapshot) => {
-                setTimeout(() => {
-                  setDoc(doc(database, `chatUsers/${user.uid}/myTexts/${auth.currentUser.uid}/messages/${snapshot.id}`), {
-                    msg: text,
-                    type: 'yourself',
-                    dateAdded: date,
-                    img: file !== null ? storageImg : null
-                  })
-                }, 2000);
-              })
+    dispatch({
+      type: "SET_LASTMSG",
+      payload: text
+    })
+    let date = new Date().getTime();
+    console.log(file)
+    if (file || file !== undefined) {
+      await submitImgToStorage(file, auth.currentUser.uid)
+        .then((snapshot) => {
+          let storageImg = snapshot;
+          addDoc(collection(database, `chatUsers/${auth.currentUser.uid}/myTexts/${user.uid}/messages`), {
+            msg: text,
+            type: 'myself',
+            dateAdded: date,
+            img: file !== null ? storageImg : null
           })
-      }
-      else {
-        addDoc(collection(database, `chatUsers/${auth.currentUser.uid}/myTexts/${user.uid}/messages`), {
-          msg: text,
-          type: 'myself',
-          dateAdded: date
+            .then((snapshot) => {
+              setTimeout(() => {
+                setDoc(doc(database, `chatUsers/${user.uid}/myTexts/${auth.currentUser.uid}/messages/${snapshot.id}`), {
+                  msg: text,
+                  type: 'yourself',
+                  dateAdded: date,
+                  img: file !== null ? storageImg : null
+                })
+              }, 2000);
+            })
         })
-          .then((snapshot) => {
-            setDoc(doc(database, `chatUsers/${user.uid}/myTexts/${auth.currentUser.uid}/messages/${snapshot.id}`), {
-              msg: text,
-              type: 'yourself',
-              dateAdded: date
-            })
-          })
-      }
-      setFile(undefined);
     }
     else {
-      toast.dark('Please enter least one word!');
+      addDoc(collection(database, `chatUsers/${auth.currentUser.uid}/myTexts/${user.uid}/messages`), {
+        msg: text,
+        type: 'myself',
+        dateAdded: date
+      })
+        .then((snapshot) => {
+          setDoc(doc(database, `chatUsers/${user.uid}/myTexts/${auth.currentUser.uid}/messages/${snapshot.id}`), {
+            msg: text,
+            type: 'yourself',
+            dateAdded: date
+          })
+        })
     }
+    setFile(undefined);
 
     setText('')
   }
@@ -146,7 +141,7 @@ const Chat = ({ user }) => {
                     setFile(files);
                   }} />
                   <label type='button' htmlFor='chatFileInput' className='btn btn-sm border-0'><i className="fa-regular fa-image"></i></label>
-                  <button type='submit' className='btn btn-sm border-0' style={{ background: "#0c3751", color: "#fff", width: "70px", height: "40px" }}>Send</button>
+                  <button type='submit' disabled={text || file ? false : true} className='btn btn-sm border-0' style={{ background: "#0c3751", color: "#fff", width: "70px", height: "40px" }}>Send</button>
                 </div>
               </form>
             </div>

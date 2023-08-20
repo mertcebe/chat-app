@@ -8,7 +8,6 @@ import SignInPage from '../components/SignInPage'
 import useAuthorized from '../components/useAuthorized'
 import { toast, ToastContainer } from 'react-toastify'
 import AllUsersPage from '../components/AllUsersPage';
-import FriendsRequests from '../components/FriendsRequests';
 
 
 const AppRouter = () => {

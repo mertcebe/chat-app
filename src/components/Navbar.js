@@ -110,7 +110,10 @@ const Navbar = () => {
                     {/* find a friend */}
                     {
                         findUser ?
-                            <MyTextUser findUser={findUser} />
+                            <>
+                                <MyTextUser findUser={findUser} isSearch={true} />
+                                <hr />
+                            </>
                             :
                             <></>
                     }

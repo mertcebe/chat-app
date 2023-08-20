@@ -81,7 +81,7 @@ export default function FriendsRequests() {
                         return (
                             <MenuItem onClick={() => {
                                 handleClose(user);
-                            }}>{user.name}</MenuItem>
+                            }}><img src={user.photoURL} style={{ width: "30px", height: "30px", borderRadius: "50%", marginRight: "10px" }} /> {user.name}</MenuItem>
                         )
                     })
                 }
