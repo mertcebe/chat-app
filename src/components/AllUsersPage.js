@@ -6,26 +6,60 @@ import User from './User'
 
 const AllUsersPage = () => {
     let [users, setUsers] = useState();
+    let [friendRequests, setFriendRequests] = useState();
+    let [updatedUsers, setUpdatedUsers] = useState();
     useEffect(() => {
-        getDocs(query(collection(database, `chatUsers`) , where('email', '!=', auth.currentUser.email)))
-            .then((snapshot) => {
-                let users = [];
-                snapshot.forEach((user) => {
-                    users.push(user.data());
+        const getAllUsers = async() => {
+            let users = [];
+            let friendRequests = [];
+            let updatedUsers = [];
+            await getDocs(query(collection(database, `chatUsers`), where('email', '!=', auth.currentUser.email)))
+                .then((snapshot) => {
+                    snapshot.forEach((user) => {
+                        users.push(user.data());
+                    })
+                    setUsers(users);
                 })
-                setUsers(users);
-            })
+                .then(async () => {
+                    await getDocs(query(collection(database, `chatUsers/${auth.currentUser.uid}/friendRequests`)))
+                        .then(async (snapshot) => {
+                            snapshot.forEach((user) => {
+                                friendRequests.push(user.data());
+                            })
+                            setFriendRequests(friendRequests);
+                            for (let user of users) {
+                                console.log(user)
+                                for (let fUser of friendRequests) {
+                                    console.log(user.uid, fUser.uid)
+                                    if (user.uid === fUser.uid) {
+                                        updatedUsers.push({
+                                            ...user,
+                                            requests: true
+                                        });
+                                    }
+                                    else {
+                                        updatedUsers.push(user);
+                                    }
+                                }
+                            }
+                            setUpdatedUsers(friendRequests.length === 0?users:updatedUsers);
+                        })
+                })
+        }
+        getAllUsers();
+
     }, []);
-    if(!users){
+    if (!updatedUsers) {
         return (
             <h5>loading...</h5>
         )
     }
+    console.log(updatedUsers)
     return (
-        <div className='d-flex justify-content-center align-items-start' style={{flexWrap: "wrap", width: "80%", height: `${(users.length / 4)*100}px`}}>
+        <div className='d-flex justify-content-center align-items-start' style={{ flexWrap: "wrap", width: "80%", height: `${(users.length / 4) * 100}px` }}>
             {
-                users.map((user, index) => {
-                    return <User key={index} user={user}/>
+                updatedUsers.map((user, index) => {
+                    return <User key={index} user={user} />
                 })
             }
         </div>

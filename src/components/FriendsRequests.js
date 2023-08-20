@@ -7,6 +7,21 @@ import database, { auth } from '../firebase/firebaseConfig';
 import { collection, deleteDoc, doc, getDocs, query, setDoc } from 'firebase/firestore';
 import { toast } from 'react-toastify';
 
+export const addFriend = (user) => {
+    setDoc(doc(database, `chatUsers/${auth.currentUser.uid}/friends/${user.name}`), user)
+        .then(() => {
+            let { displayName, email, photoURL, uid } = auth.currentUser;
+            setDoc(doc(database, `chatUsers/${user.uid}/friends/${displayName}`), {
+                name: displayName,
+                email: email,
+                photoURL: photoURL,
+                uid: uid
+            });
+            deleteDoc(doc(database, `chatUsers/${auth.currentUser.uid}/friendRequests/${user.uid}`))
+            toast.success("Successfully add to my friends!");
+        })
+}
+
 export default function FriendsRequests() {
     let [users, setUsers] = useState();
     useEffect(() => {
@@ -24,20 +39,7 @@ export default function FriendsRequests() {
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
-    const addFriend = (user) => {
-        setDoc(doc(database, `chatUsers/${auth.currentUser.uid}/friends/${user.name}`), user)
-            .then(() => {
-                let { displayName, email, photoURL, uid } = auth.currentUser;
-                setDoc(doc(database, `chatUsers/${user.uid}/friends/${displayName}`), {
-                    name: displayName,
-                    email: email,
-                    photoURL: photoURL,
-                    uid: uid
-                });
-                deleteDoc(doc(database, `chatUsers/${auth.currentUser.uid}/friendRequests/${user.uid}`))
-                toast.success("Successfully add to my friends!");
-            })
-    }
+
     const handleClose = (user) => {
         if (user.uid !== undefined) {
             addFriend(user);
@@ -55,9 +57,15 @@ export default function FriendsRequests() {
         )
     }
     return (
-        <div>
+        <div style={{ position: "relative" }}>
+            {
+                users.length === 0 ?
+                    <></>
+                    :
+                    <b className='bg-primary text-light' style={{ borderRadius: "50%", fontSize: "10px", display: "inline-block", width: "16px", height: "16px", lineHeight: "16px", textAlign: "center", position: "absolute", right: "14px", top: "-3px", zIndex: "10" }}>{users.length}</b>
+            }
             <Button
-                style={{ color: "#fff" }}
+                style={{ color: "#fff", zIndex: "100" }}
                 id="fade-button"
                 aria-controls={open ? 'fade-menu' : undefined}
                 aria-haspopup="true"
