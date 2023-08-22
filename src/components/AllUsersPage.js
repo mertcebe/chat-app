@@ -28,7 +28,6 @@ const AllUsersPage = () => {
                             })
                             setFriendRequests(friendRequests);
                             for (let user of users) {
-                                console.log(user)
                                 for (let fUser of friendRequests) {
                                     console.log(user.uid, fUser.uid)
                                     if (user.uid === fUser.uid) {
@@ -54,7 +53,6 @@ const AllUsersPage = () => {
             <h5>loading...</h5>
         )
     }
-    console.log(updatedUsers)
     return (
         <div className='d-flex justify-content-center align-items-start' style={{ flexWrap: "wrap", width: "80%", height: `${(users.length / 4) * 100}px` }}>
             {

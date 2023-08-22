@@ -9,7 +9,6 @@ import useAuthorized from '../components/useAuthorized'
 import { toast, ToastContainer } from 'react-toastify'
 import AllUsersPage from '../components/AllUsersPage';
 
-
 const AppRouter = () => {
     let { isAuthorized, loading } = useAuthorized();
     return (
@@ -26,7 +25,8 @@ const AppRouter = () => {
                                     <Route path='/chats/all-users' element={<AllUsersPage />} />
                                 </Route>
                                 <Route element={<PublicRoute isAuthorized={isAuthorized} />}>
-                                    <Route path='/' element={<SignInPage />} />
+                                    <Route path='/' element={<SignInPage type={'sign-in'} />} />
+                                    <Route path='/register' element={<SignInPage type={'register'} />} />
                                 </Route>
                             </Routes>
                             <ToastContainer

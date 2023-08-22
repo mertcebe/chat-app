@@ -8,7 +8,6 @@ import AllUsersPage from './AllUsersPage'
 import { useSelector } from 'react-redux'
 import FriendsRequests from './FriendsRequests'
 
-
 const ChatsPage = ({ allUsers }) => {
     let [activeUser, isAllUsers] = useSelector((state) => {
         return [state.activeUser, state.allUsers];

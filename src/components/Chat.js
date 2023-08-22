@@ -25,15 +25,9 @@ const Chat = ({ user }) => {
     }
   }, [user, messages]);
 
-  let dispatch = useDispatch();
   const sendMesssage = async (e) => {
     e.preventDefault();
-    dispatch({
-      type: "SET_LASTMSG",
-      payload: text
-    })
     let date = new Date().getTime();
-    console.log(file)
     if (file || file !== undefined) {
       await submitImgToStorage(file, auth.currentUser.uid)
         .then((snapshot) => {
@@ -71,8 +65,7 @@ const Chat = ({ user }) => {
         })
     }
     setFile(undefined);
-
-    setText('')
+    setText('');
   }
 
 

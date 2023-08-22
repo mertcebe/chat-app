@@ -23,15 +23,11 @@ const MyTextUser = ({ findUser, isSearch }) => {
     const getLastMsg = async () => {
       await getDocs(query(collection(database, `chatUsers/${auth.currentUser.uid}/myTexts/${findUser.uid}/messages`)))
         .then((snapshot) => {
-          let lastMsg = "";
-          let type = "";
           let dates = [];
           let messages = [];
           snapshot.forEach((msg) => {
             messages.push(msg.data());
             dates.push(msg.data().dateAdded);
-            lastMsg = msg.data().msg;
-            type = msg.data().type;
           })
           dates = dates.sort().reverse();
           for (let msg of messages) {
@@ -62,7 +58,7 @@ const MyTextUser = ({ findUser, isSearch }) => {
           isSearch ?
             <></>
             :
-            <small className='m-0 p-0'>{lastMsg.msg.length > 14?`${lastMsg.msg.slice(0,14)}...`:lastMsg.msg}{lastMsg.type === 'myself' ? <i className="fa-solid fa-check"></i> : <></>}~{<Moment fromNow style={{ fontSize: "12px" }}>{lastMsg.dateAdded}</Moment>}</small>
+            <small className='m-0 p-0'>{lastMsg.msg.length > 16?`${lastMsg.msg.slice(0,16)}...`:lastMsg.msg}{lastMsg.type === 'myself' ? <i className="fa-solid fa-check"></i> : <></>}~{<Moment fromNow style={{ fontSize: "12px" }}>{lastMsg.dateAdded}</Moment>}</small>
 
         }
       </div>
